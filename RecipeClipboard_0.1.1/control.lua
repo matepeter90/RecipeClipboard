@@ -25,7 +25,7 @@
    end
   end
 
-  game.onevent(defines.events.ontick,
+  script.on_event(defines.events.on_tick,
   function(e)
     if game.player.opened then
       if pcall(function() return game.player.opened.recipe end) then
@@ -57,7 +57,7 @@
     end
   end)
 
-  game.onevent(defines.events.onguiclick, function(event)
+  script.on_event(defines.events.on_gui_click, function(event)
     if (event.element.name == 'copyButton') then
       pcall(function()
         local i = 0
@@ -66,7 +66,7 @@
         for _,x in pairs(game.player.opened.recipe.ingredients) do
           listSlots(x)
           if x['type'] then
-            if x['type'] == 0 then
+            if x['type'] == 'item' then
               ingredients[x['name']] = {name = x['name'], count = x['amount']* defaultIngredientRatio}
               dbg('Added [' .. serpent.block(x) .. ']')
             end
@@ -78,14 +78,14 @@
       pcall(function()
         if game.player.opened.type == 'inserter' then
           if string.find(game.player.opened.name, "smart") then
-            game.player.opened.setcircuitcondition {circuit = defines.circuitconnector.logistic, name = item, count = defaultInserterLimit, operator = "<"}
+            game.player.opened.set_circuit_condition {circuit = defines.circuitconnector.logistic, name = item, count = defaultInserterLimit, operator = "<"}
           end
         else
           local s = 0
           for _,_ in pairs(ingredients) do s = s + 1 end
           listSlots(ingredients)
           for i=1,10 do
-            local slot = game.player.opened.getrequestslot(i)
+            local slot = game.player.opened.get_request_slot(i)
             if slot ~= nil then
               local n = slot['name']
               if ingredients[n] ~= nil then
@@ -99,7 +99,7 @@
           listSlots(ingredients)
           local i = 1
           for _,e in pairs(ingredients) do
-            game.player.opened.setrequestslot(e,i)
+            game.player.opened.set_request_slot(e,i)
             i = i + 1
             if i > 10 then
               break
